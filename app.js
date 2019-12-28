@@ -21,15 +21,15 @@ if (args.length === 3) {
 }
 
 if (address && address !== "") {
-  geocode(address, (error, data) => {
+  geocode(address, (error, { longitude, latitude, location }) => {
     if (error && error !== "undefined") {
       log("Error: ", error);
     } else {
-      forecast(data.longitude, data.latitude, (error, forecastData) => {
+      forecast(longitude, latitude, (error, forecastData) => {
         if (error && error !== "undefined") {
           log("Error: ", error);
         } else {
-          log(data.location);
+          log(location);
           log(forecastData);
         }
       });
