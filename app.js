@@ -1,22 +1,38 @@
-const request = require("request");
 const geocode = require("./utils/geocode");
 const forecast = require("./utils/forecast");
+const chalk = require("chalk");
 const log = console.log;
+
+const takeOut = (a, b, ...others) => {
+  return others;
+};
 
 // Address => Lat/Long => Weather
 
-geocode("Lagos", (error, data) => {
-  if (error && error !== "undefined") {
-    log("Error: ", error);
-  } else {
-    log("Location: ", data);
-  }
-});
+const args = process.argv;
+// log(args.length);
+let address = "";
+if (args.length === 3) {
+  address = args[2];
+} else if (args.length > 3) {
+  address = takeOut(...args).join(" ");
+} else {
+  log(chalk.red.bold("Please enter the name of your city"));
+}
 
-forecast(-75.7088, 44.1545, (error, data) => {
-  if (error && error !== "undefined") {
-    log("Error: ", error);
-  } else {
-    log("Forecast: ", data);
-  }
-});
+if (address && address !== "") {
+  geocode(address, (error, data) => {
+    if (error && error !== "undefined") {
+      log("Error: ", error);
+    } else {
+      forecast(data.longitude, data.latitude, (error, forecastData) => {
+        if (error && error !== "undefined") {
+          log("Error: ", error);
+        } else {
+          log(data.location);
+          log(forecastData);
+        }
+      });
+    }
+  });
+}
